@@ -4,6 +4,7 @@ const bodyParser = require("body-parser");
 const database = require("./database");
 const register = require("./models/register");
 const login = require("./models/login");
+const cors = require("cors");
 const app = express();
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
@@ -13,6 +14,9 @@ const jwtSecret = process.env.TOKEN_KEY;
 
 app.use(express.json());
 app.use(bodyParser.json());
+
+app.use(cors({ origin: "*" }));
+
 app.post("/register", async (req, res) => {
   const { email, password } = req.body;
 
