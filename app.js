@@ -4,12 +4,15 @@ const bodyParser = require("body-parser");
 const database = require("./database");
 const register = require("./models/register");
 const login = require("./models/login");
+const cors = require("cors");
 const app = express();
 const bcrypt = require("bcrypt");
 
 const PORT = process.env.PORT;
 
 app.use(bodyParser.json());
+
+app.use(cors({ origin: "*" }));
 
 app.post("/register", async (req, res) => {
   const { email, password } = req.body;
