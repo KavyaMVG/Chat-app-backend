@@ -46,7 +46,6 @@ app.post("/register", async (req, res) => {
 });
 
 app.post("/login", async (req, res) => {
-  const { email, password } = req.body;
   const { authorization } = req.headers;
 
   // TODO: validation needed for scenario where password is not passed in the body
@@ -68,21 +67,13 @@ app.post("/login", async (req, res) => {
       console.log(req.headers.error);
       return;
     }
-    const user = await login.login.findOne({
-      email: email,
-    });
 
-    if (!user) {
+    if (!req.user) {
       res.status(400).send({ msg: "User doesn't exist" });
       return;
     }
-    const match = await bcrypt.compare(password, user.password);
 
-    if (!match) {
-      res.status(401).send({ msg: "Not authorized" });
-      return;
-    }
-    res.status(200).send({ id: user._id, msg: "Login successful!" });
+    res.status(200).send({ msg: "Login successful!" });
   } catch (err) {
     console.log(err);
     res.status(500).send("Server error");
