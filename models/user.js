@@ -23,4 +23,4 @@ const register = mongoose.model("register", registerSchema);
 
 const login = mongoose.model("login", loginSchema);
 
-exports.user = { register, login };
+exports.userSchema = { register, login };
