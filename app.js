@@ -10,6 +10,7 @@ const contacts = require("./models/contact");
 const cors = require("cors");
 const app = express();
 const bcrypt = require("bcrypt");
+const chat = require("./models/chat");
 
 const PORT = process.env.PORT;
 const io = require("socket.io")(8080, {
@@ -98,6 +99,18 @@ app.post("/contacts/add", async (req, res) => {
   } catch (err) {
     console.log(err);
     res.status(500).send({ msg: "Server error" });
+  }
+});
+
+app.post("/user/chats", async (req, res) => {
+  const message = req.body;
+  try {
+    const chatModel = new chat.chat(message);
+    const response = await chatModel.save();
+    res.status(201).send({ msg: response.msg, id: response._id });
+  } catch (err) {
+    console.log(err);
+    res.status(404).send({ msg: "Client error" });
   }
 });
 
