@@ -77,10 +77,10 @@ app.post("/login", async (req, res) => {
 });
 
 app.get("/contacts/lists", async (req, res) => {
-  const response = req.query;
+  const { userId } = req.query;
   try {
     const userContact = await contacts.contacts.find({
-      userId: response.userId,
+      userId: userId,
     });
     res.status(200).send({ userContact });
   } catch (err) {
@@ -114,7 +114,61 @@ app.post("/user/chats", async (req, res) => {
   }
 });
 
+app.get("/chats/lists", async (req, res) => {
+  const message = req.query;
+  try {
+    const chatModel = await chat.chat.findOne({
+      chat: message.id,
+    });
+    res.status(200).send({ chatModel });
+  } catch (err) {
+    console.log(err);
+  }
+});
+
+app.delete("/chat", async (req, res) => {
+  const response = req.query;
+  try {
+    const deleteModel = await chat.chat.deleteOne({
+      chatId: response.id,
+    });
+    res.status(200).send({ deleteModel });
+  } catch (err) {
+    console.log(err);
+  }
+});
+
+app.get("/chat/sender/:id", async (req, res) => {
+  const senderChat = req.params.id;
+  try {
+    const senderModel = await chat.chat.findOne({
+      senderId: senderChat,
+    });
+    res.status(200).send({ senderModel });
+  } catch (err) {
+    res.status(500).send({ msg: "Server error" });
+  }
+});
+
+app.get("/chat/receiver/:id", async (req, res) => {
+  const receiverChat = req.params.id;
+  try {
+    const receiverModel = await chat.chat.findOne({
+      receiverId: receiverChat,
+    });
+    res.status(200).send({ receiverModel });
+  } catch (err) {
+    res.status(500).send({ msg: "Server error" });
+  }
+});
+
 app.listen(PORT, async () => {
   console.log(`Listening on port:${PORT}`);
   database.connect();
 });
+
+//first get all chats
+// get all chats for given sender receiver id
+// get all chats for given sender id
+// get all chats for given receiver id(optional)
+//delete  chats for given chat id
