@@ -30,7 +30,6 @@ const register = async (req, res, next) => {
 
 const login = async (req, res, next) => {
   const { email } = req.body;
-  // TODO: validation needed for scenario where password is not passed in the body
   try {
     const user = await userModel.findOne({
       email: email,
@@ -42,7 +41,11 @@ const login = async (req, res, next) => {
     }
     res
       .status(200)
-      .send({ id: user._id, msg: "Login successful!", id: user._id });
+      .send({
+        id: user._id,
+        msg: "Login successful!",
+        user: { id: user._id, token: req.authToken },
+      });
   } catch (err) {
     console.log(err);
     res.status(500).send("Server error");
