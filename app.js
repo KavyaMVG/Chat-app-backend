@@ -12,6 +12,7 @@ const { userRegistration } = require("./controller/registration");
 const PORT = process.env.PORT;
 const jwtSecret = process.env.TOKEN_KEY;
 const router = express.Router();
+const { auth } = require("./middleware/auth");
 
 app.use(express.json());
 app.use(bodyParser.json());
@@ -45,29 +46,8 @@ app.post("/register", async (req, res) => {
   }
 });
 
-app.post("/login", async (req, res) => {
-  const { authorization } = req.headers;
-
-  // TODO: validation needed for scenario where password is not passed in the body
+app.post("/login", auth, async (req, res) => {
   try {
-    if (!authorization) {
-      res.status(401).send({ msg: "Unauthorized" });
-      return;
-    }
-    jwt.verify(authorization, jwtSecret, (err, user) => {
-      if (err) {
-        req.headers.error = err;
-        return;
-      }
-      req.user = user;
-    });
-
-    if (req.headers.error) {
-      res.status(403).send({ msg: "Error verifying Token" });
-      console.log(req.headers.error);
-      return;
-    }
-
     if (!req.user) {
       res.status(400).send({ msg: "User doesn't exist" });
       return;
