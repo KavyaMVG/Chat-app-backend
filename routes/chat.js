@@ -1,14 +1,11 @@
-import express from "express";
-// controllers
-import chatRoom from "../controllers/chatRoom.js";
-
+const express = require("express");
 const router = express.Router();
+const chatController = require("../controllers/chat");
 
-router
-  .get("/", chatRoom.getRecentConversation)
-  .get("/:roomId", chatRoom.getConversationByRoomId)
-  .post("/initiate", chatRoom.initiate)
-  .post("/:roomId/message", chatRoom.postMessage)
-  .put("/:roomId/mark-read", chatRoom.markConversationReadByRoomId);
+router.post("/add", chatController.addContact);
+router.post("/lists", chatController.getContactList);
+router.delete("/chat", chatController.deleteChat);
+router.get("/sender/:id", chatController.getSenderId);
+router.get("/receiver/:id", chatController.getReceiverId);
 
-export default router;
+module.exports = router;

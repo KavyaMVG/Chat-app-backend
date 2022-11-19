@@ -7,12 +7,11 @@ const userSchema = Schema(
     email: { type: String, required: true },
     password: { type: String, required: true },
   },
-  {
-    timestamps: true,
-    collection: "users",
-  }
+  { collection: "users" }
 );
 
-const user = mongoose.model("user", userSchema);
+const register = mongoose.model("register", registerSchema);
 
-export default user;
+const login = mongoose.model("login", loginSchema);
+
+exports.userSchema = { register, login };
