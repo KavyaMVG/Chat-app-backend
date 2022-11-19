@@ -1,6 +1,7 @@
 require("dotenv").config();
 const jwt = require("jsonwebtoken");
-const jwtToken = process.env.TOKEN;
+const jwtSecret = process.env.TOKEN_KEY;
+const userModel = require("../models/user");
 
 const auth = (req, res, next) => {
   try {
@@ -9,16 +10,19 @@ const auth = (req, res, next) => {
       res.status(403).send({ msg: "Missing authorization" });
       return;
     }
-    jwt.verify(authorization, jwtToken, (err, user) => {
+
+    jwt.verify(authorization, jwtSecret, (err, user) => {
       if (err) {
+        console.log(err);
         req.headers.err = err;
-      }
-      if (req.headers.err) {
-        res.status(401).send({ msg: "Invalid jwt Token" });
-        return;
       }
       req.user = user;
     });
+
+    if (req.headers.err) {
+      res.status(401).send({ msg: "Invalid jwt Token" });
+      return;
+    }
     next();
   } catch (err) {
     console.log(err);
@@ -29,7 +33,7 @@ const auth = (req, res, next) => {
 const generateToken = async (req, res, next) => {
   const { email } = req.body;
   try {
-    const user = await register.users.findOne({
+    const user = await userModel.findOne({
       email: email,
     });
     if (user) {
@@ -37,16 +41,17 @@ const generateToken = async (req, res, next) => {
       return;
     }
     const token = jwt.sign({ email }, jwtSecret, {
-      expiresIn: "30s",
+      expiresIn: "5000s",
     });
     req.authToken = token;
+    next();
   } catch (err) {
     console.log(err);
     res.status(500).send({ msg: "Error generating jwt token", err });
   }
 };
 
-export default {
+module.exports = {
   auth,
   generateToken,
 };
