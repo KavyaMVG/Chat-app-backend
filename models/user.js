@@ -10,9 +10,8 @@ const userSchema = Schema(
   },
   {
     timestamps: true,
-    collection: "chats",
-  },
-  { collection: "users" }
+    collection: "users",
+  }
 );
 const user = mongoose.model("user", userSchema);
 module.exports = user;

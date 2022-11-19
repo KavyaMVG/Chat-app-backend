@@ -9,9 +9,6 @@ const contactSchema = new Schema(
   },
   {
     timestamps: true,
-    collection: "chats",
-  },
-  {
     collection: "contacts",
   }
 );

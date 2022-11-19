@@ -1,54 +1,68 @@
 const userModel = require("../models/user");
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
+const jwtSecret = process.env.TOKEN_KEY;
 
-const register = async (req, res, next) => {
+const register = async (req, res) => {
   const { email, password } = req.body;
   try {
-    const users = await userModel.findOne({
+    const user = await userModel.findOne({
       email: email,
     });
-    if (users) {
+    if (user) {
       res.status(403).send({ msg: "User already exists" });
       return;
     }
+
     const salt = await bcrypt.genSalt(10);
     req.body.password = await bcrypt.hash(password, salt);
-    const user = new userModel(req.body);
-    const response = await user.save();
+    const newUser = new userModel(req.body);
+    const response = await newUser.save();
+    const token = jwt.sign(req.body, jwtSecret, {
+      expiresIn: "5000s",
+    });
+
     res.status(201).send({
       msg: "Registration successful!",
       user: {
         id: response._id,
-        token: req.authToken,
+        token,
       },
     });
   } catch (err) {
     console.log(err);
-    res.status(400).send({ msg: "Please check your inputs" });
+    res.status(500).send({ msg: "Error while creating user" });
   }
 };
 
-const login = async (req, res, next) => {
-  const { email } = req.body;
+const login = async (req, res) => {
   try {
+    const { email, password } = req.body;
     const user = await userModel.findOne({
       email: email,
     });
 
     if (!user) {
-      res.status(400).send({ msg: "User doesn't exist" });
-      return;
+      return res.status(404).send({ msg: "No user found for provided email" });
     }
-    res
-      .status(200)
-      .send({
-        id: user._id,
-        msg: "Login successful!",
-        user: { id: user._id, token: req.authToken },
-      });
+
+    const match = await bcrypt.compare(password, user.password);
+    if (!match) {
+      return res.status(401).send({ msg: "Incorrect password" });
+    }
+
+    const token = jwt.sign(req.body, jwtSecret, {
+      expiresIn: "5000s",
+    });
+
+    res.status(200).send({
+      id: user._id,
+      msg: "Login successful!",
+      user: { id: user._id, token },
+    });
   } catch (err) {
     console.log(err);
-    res.status(500).send("Server error");
+    res.status(500).send({ msg: "Error while verifying jwt token", err });
   }
 };
 
