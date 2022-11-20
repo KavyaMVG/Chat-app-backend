@@ -4,8 +4,9 @@ const jwtSecret = process.env.TOKEN_KEY;
 
 const auth = async (req, res, next) => {
   const { authorization } = req.headers;
+  if (!authorization)
+    return res.status(403).send({ msg: "Missing auth token" });
   try {
-    console.log({ authorization, jwtSecret });
     jwt.verify(authorization, jwtSecret, (err, user) => {
       if (err) {
         req.header.err = err;
