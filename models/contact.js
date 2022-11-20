@@ -8,6 +8,7 @@ const contactSchema = new Schema(
     username: { type: String, required: true },
   },
   {
+    timestamps: true,
     collection: "contacts",
   }
 );
