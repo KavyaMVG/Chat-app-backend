@@ -1,5 +1,5 @@
 const { contact } = require("../models/contact");
-
+const { user } = require("../models/user");
 const contactList = async (req, res) => {
   const { userId } = req.query;
   try {
@@ -15,7 +15,19 @@ const contactList = async (req, res) => {
 
 const addContact = async (req, res) => {
   try {
-    console.log(req.body);
+    const existingUser = await user.findOne({ email: req.body.email });
+    if (!existingUser) {
+      return res
+        .status(404)
+        .send({ msg: "Cannot add contact, User is not registered" });
+    }
+    const existingContact = contact.findOne({
+      email: req.body.email,
+      userId: req.body.userId,
+    });
+    if (existingContact) {
+      return res.status(403).send({ msg: "Contact already exists" });
+    }
     const contactModel = new contact(req.body);
     const response = await contactModel.save();
     res
