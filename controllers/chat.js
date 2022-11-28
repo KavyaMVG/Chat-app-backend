@@ -1,9 +1,9 @@
-const chat = require("../models/chat");
+const { chat } = require("../models/chat");
 
 const addContact = async (req, res) => {
   const message = req.body;
   try {
-    const chatModel = new chat.chat(message);
+    const chatModel = new chat(message);
     const response = await chatModel.save();
     res.status(201).send({ msg: response.msg, id: response._id });
   } catch (err) {
@@ -15,7 +15,7 @@ const addContact = async (req, res) => {
 const getContactList = async (req, res) => {
   const message = req.query;
   try {
-    const chatModel = await chat.chat.findOne({
+    const chatModel = await chat.findOne({
       chat: message.id,
     });
     res.status(200).send({ chatModel });
@@ -27,7 +27,7 @@ const getContactList = async (req, res) => {
 const deleteChat = async (req, res) => {
   const response = req.query;
   try {
-    const deleteModel = await chat.chat.deleteOne({
+    const deleteModel = await chat.deleteOne({
       chatId: response.id,
     });
     res.status(200).send({ deleteModel });
@@ -39,7 +39,7 @@ const deleteChat = async (req, res) => {
 const getSenderId = async (req, res) => {
   const senderChat = req.params.id;
   try {
-    const senderModel = await chat.chat.findOne({
+    const senderModel = await chat.findOne({
       senderId: senderChat,
     });
     res.status(200).send({ senderModel });
@@ -51,7 +51,7 @@ const getSenderId = async (req, res) => {
 const getReceiverId = async (req, res) => {
   const receiverChat = req.params.id;
   try {
-    const receiverModel = await chat.chat.findOne({
+    const receiverModel = await chat.findOne({
       receiverId: receiverChat,
     });
     res.status(200).send({ receiverModel });
@@ -63,7 +63,7 @@ const getReceiverId = async (req, res) => {
 const getOneToOneChats = async (req, res) => {
   const { senderId, receiverId } = req.query;
   try {
-    const chatModel = await chat.chat.find({
+    const chatModel = await chat.find({
       senderId: senderId,
       receiverId: receiverId,
     });
