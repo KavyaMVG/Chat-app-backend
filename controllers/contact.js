@@ -1,9 +1,9 @@
-const contacts = require("../models/contact");
+const { contact } = require("../models/contact");
 
 const contactList = async (req, res) => {
   const { userId } = req.query;
   try {
-    const userContact = await contacts.contacts.find({
+    const userContact = await contact.find({
       userId: userId,
     });
     res.status(200).send({ userContact });
@@ -16,7 +16,7 @@ const contactList = async (req, res) => {
 const addContact = async (req, res) => {
   try {
     console.log(req.body);
-    const contactModel = new contacts.contacts(req.body);
+    const contactModel = new contact(req.body);
     const response = await contactModel.save();
     res
       .status(201)

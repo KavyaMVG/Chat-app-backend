@@ -6,7 +6,7 @@ const cors = require("cors");
 const app = express();
 const bcrypt = require("bcrypt");
 const userRouter = require("./routes/user");
-const contactsRouter = require("./routes/contacts");
+const contactsRouter = require("./routes/contact");
 const chatRouter = require("./routes/chat");
 
 const PORT = process.env.PORT;

@@ -60,10 +60,24 @@ const getReceiverId = async (req, res) => {
   }
 };
 
+const getOneToOneChats = async (req, res) => {
+  const { senderId, receiverId } = req.query;
+  try {
+    const chatModel = await chat.chat.find({
+      senderId: senderId,
+      receiverId: receiverId,
+    });
+    res.status(200).send({ chats: chatModel });
+  } catch (err) {
+    console.log(err);
+  }
+};
+
 module.exports = {
   addContact,
   getContactList,
   deleteChat,
   getSenderId,
   getReceiverId,
+  getOneToOneChats,
 };
