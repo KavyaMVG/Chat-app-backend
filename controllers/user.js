@@ -1,52 +1,67 @@
-const { userSchema } = require("../models/user");
+const userModel = require("../models/user");
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
+const jwtSecret = process.env.TOKEN_KEY;
 
-const register = async (req, res, next) => {
+const register = async (req, res) => {
   const { email, password } = req.body;
-
   try {
-    const users = await userSchema.register.findOne({
+    const user = await userModel.findOne({
       email: email,
     });
-    if (users) {
+    if (user) {
       res.status(403).send({ msg: "User already exists" });
       return;
     }
+
     const salt = await bcrypt.genSalt(10);
     req.body.password = await bcrypt.hash(password, salt);
-    const userModel = new userSchema.register(req.body);
-    const response = await userModel.save();
-    res.status(201).send({ id: response._id, msg: "Registration successful!" });
+    const newUser = new userModel(req.body);
+    const response = await newUser.save();
+    const token = jwt.sign(req.body, jwtSecret, {
+      expiresIn: "5000s",
+    });
+
+    res.status(201).send({
+      msg: "Registration successful!",
+      user: {
+        id: response._id,
+        token,
+      },
+    });
   } catch (err) {
     console.log(err);
-    res.status(400).send({ msg: "Please check your inputs" });
+    res.status(500).send({ msg: "Error while creating user" });
   }
 };
 
-const login = async (req, res, next) => {
-  const { email, password } = req.body;
-  // TODO: validation needed for scenario where password is not passed in the body
+const login = async (req, res) => {
   try {
-    const user = await userSchema.login.findOne({
+    const { email, password } = req.body;
+    const user = await userModel.findOne({
       email: email,
     });
 
     if (!user) {
-      res.status(400).send({ msg: "User doesn't exist" });
-      return;
+      return res.status(404).send({ msg: "No user found for provided email" });
     }
-    const match = await bcrypt.compare(password, user.password);
 
+    const match = await bcrypt.compare(password, user.password);
     if (!match) {
-      res.status(401).send({ msg: "Not authorized" });
-      return;
+      return res.status(401).send({ msg: "Incorrect password" });
     }
-    res
-      .status(200)
-      .send({ id: user._id, msg: "Login successful!", id: user._id });
+
+    const token = jwt.sign(req.body, jwtSecret, {
+      expiresIn: "5000s",
+    });
+
+    res.status(200).send({
+      msg: "Login successful!",
+      user: { id: user._id, token },
+    });
   } catch (err) {
     console.log(err);
-    res.status(500).send("Server error");
+    res.status(500).send({ msg: "Error while verifying jwt token", err });
   }
 };
 
