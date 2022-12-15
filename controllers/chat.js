@@ -1,9 +1,14 @@
 const { chat } = require("../models/chat");
 
 const addContact = async (req, res) => {
-  const message = req.body;
+  const { msg, senderId, receiverId } = req.body;
+  const data = {
+    msg,
+    senderId,
+    users: [senderId, receiverId],
+  };
   try {
-    const chatModel = new chat(message);
+    const chatModel = new chat(data);
     const response = await chatModel.save();
     res.status(201).send({ msg: response.msg, id: response._id });
   } catch (err) {
@@ -64,8 +69,9 @@ const getOneToOneChats = async (req, res) => {
   const { senderId, receiverId } = req.query;
   try {
     const chatModel = await chat.find({
-      senderId: senderId,
-      receiverId: receiverId,
+      users: {
+        $all: [senderId, receiverId],
+      },
     });
     res.status(200).send({ chats: chatModel });
   } catch (err) {

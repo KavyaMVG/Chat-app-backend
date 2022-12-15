@@ -1,5 +1,6 @@
 const { contact } = require("../models/contact");
 const { user } = require("../models/user");
+
 const contactList = async (req, res) => {
   const { userId } = req.query;
   try {
@@ -25,9 +26,9 @@ const addContact = async (req, res) => {
       email: req.body.email,
       userId: req.body.userId,
     });
-    if (existingContact) {
-      return res.status(403).send({ msg: "Contact already exists" });
-    }
+    // if (existingContact) {
+    //   return res.status(403).send({ msg: "Contact already exists" });
+    // }
     const contactModel = new contact(req.body);
     const response = await contactModel.save();
     res
