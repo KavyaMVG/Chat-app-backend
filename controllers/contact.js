@@ -16,19 +16,21 @@ const contactList = async (req, res) => {
 
 const addContact = async (req, res) => {
   try {
-    const existingUser = await user.findOne({ email: req.body.email });
+    const existingUser = await user.findOne({ email: req.body.contact.email });
     if (!existingUser) {
       return res
         .status(404)
         .send({ msg: "Cannot add contact, User is not registered" });
     }
-    const existingContact = contact.findOne({
-      email: req.body.email,
-      userId: req.body.userId,
+    const existingContact = await contact.findOne({
+      email: req.body.contact.email,
+      userId: req.body.contact.userId,
     });
-    // if (existingContact) {
-    //   return res.status(403).send({ msg: "Contact already exists" });
-    // }
+    if (existingContact) {
+      return res.status(403).send({ msg: "Contact already exists" });
+    }
+
+    req.body.contact.id = existingUser._id;
     const contactModel = new contact(req.body);
     const response = await contactModel.save();
     res
