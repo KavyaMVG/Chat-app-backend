@@ -1,6 +1,6 @@
 const { chat } = require("../models/chat");
 
-const addContact = async (req, res) => {
+const addChat = async (req, res) => {
   const { msg, senderId, receiverId } = req.body;
   const data = {
     msg,
@@ -10,6 +10,7 @@ const addContact = async (req, res) => {
   try {
     const chatModel = new chat(data);
     const response = await chatModel.save();
+    console.log(response);
     res.status(201).send({ msg: response.msg, id: response._id });
   } catch (err) {
     console.log(err);
@@ -80,7 +81,7 @@ const getOneToOneChats = async (req, res) => {
 };
 
 module.exports = {
-  addContact,
+  addChat,
   getContactList,
   deleteChat,
   getSenderId,
