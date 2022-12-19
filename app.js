@@ -7,6 +7,7 @@ const app = express();
 const userRouter = require("./routes/user");
 const contactsRouter = require("./routes/contact");
 const chatRouter = require("./routes/chat");
+const { chat } = require("./models/chat");
 
 const PORT = process.env.PORT;
 const io = require("socket.io")(8080, {
@@ -15,8 +16,18 @@ const io = require("socket.io")(8080, {
   },
 });
 
-io.on("connected", (socket) => {
-  console.log(socket.id);
+io.on("connect", (socket) => {
+  socket.on("message", async (payload) => {
+    const { msg, senderId, receiverId } = payload.data;
+    const data = {
+      msg,
+      senderId,
+      users: [senderId, receiverId],
+    };
+    const chatModel = new chat(data);
+    const response = await chatModel.save();
+    io.emit("message", response);
+  });
 });
 
 app.use(express.json());
