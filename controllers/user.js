@@ -25,6 +25,8 @@ const register = async (req, res) => {
     res.status(201).send({
       msg: "Registration successful!",
       user: {
+        firstname: response.firstname,
+
         id: response._id,
         token,
       },
@@ -38,9 +40,7 @@ const register = async (req, res) => {
 const login = async (req, res) => {
   try {
     const { email, password } = req.body;
-    const existingUser = await user.findOne({
-      email: email,
-    });
+    const existingUser = await user.findOne({ email: email });
 
     if (!existingUser) {
       return res.status(404).send({ msg: "No user found for provided email" });
@@ -55,9 +55,16 @@ const login = async (req, res) => {
       expiresIn: "5000s",
     });
 
+    const data = {
+      ...existingUser._doc,
+      token,
+    };
+
+    console.log(data);
+
     res.status(200).send({
       msg: "Login successful!",
-      user: { id: existingUser._id, token },
+      user: data,
     });
   } catch (err) {
     console.log(err);

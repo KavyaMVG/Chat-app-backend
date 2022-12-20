@@ -12,6 +12,7 @@ const auth = async (req, res, next) => {
         req.header.err = err;
         return;
       }
+      console.log();
       req.user = user;
     });
     if (req.header.err) {
