@@ -19,7 +19,7 @@ const register = async (req, res) => {
     const newUser = new user(req.body);
     const response = await newUser.save();
     const token = jwt.sign(req.body, jwtSecret, {
-      expiresIn: "5000s",
+      expiresIn: "10h",
     });
 
     res.status(201).send({
