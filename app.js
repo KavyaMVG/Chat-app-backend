@@ -9,6 +9,8 @@ const contactsRouter = require("./routes/contact");
 const chatRouter = require("./routes/chat");
 const { chat } = require("./models/chat");
 
+const groupchatRouter = require("./routes/groupChat");
+
 const PORT = process.env.PORT;
 const io = require("socket.io")(8080, {
   cors: {
@@ -38,6 +40,7 @@ app.use(cors({ origin: "*" }));
 app.use("/user", userRouter);
 app.use("/contact", contactsRouter);
 app.use("/chat", chatRouter);
+app.use("/groupchat", groupchatRouter);
 
 app.listen(PORT, async () => {
   console.log(`Listening on port: ${PORT}`);
