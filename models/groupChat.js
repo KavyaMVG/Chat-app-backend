@@ -7,6 +7,10 @@ const groupChatSchema = new Schema(
       type: String,
       required: true,
     },
+    admin: {
+      type: String,
+      required: true,
+    },
     members: {
       type: Array,
       required: true,
