@@ -1,27 +1,26 @@
 const mongoose = require("mongoose");
 const { Schema } = mongoose;
 
-const groupChatSchema = new Schema(
+const groupSchema = new Schema(
   {
-    groupId: {
+    name: {
       type: String,
       required: true,
     },
-    msg: {
+    admin: {
       type: String,
       required: true,
     },
-
-    senderId: {
-      type: String,
+    members: {
+      type: Array,
       required: true,
     },
   },
   {
     timestamps: true,
-    collection: "groupchat",
+    collection: "group",
   }
 );
 
-const groupChat = mongoose.model("groupchat", groupChatSchema);
-exports.groupChat = groupChat;
+const group = mongoose.model("group", groupSchema);
+exports.group = group;

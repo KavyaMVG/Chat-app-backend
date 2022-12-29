@@ -1,31 +1,38 @@
-const { groupchat } = require("../models/groupChat");
+const { groupChat } = require("../models/groupChat");
 
 const addGroupChat = async (req, res) => {
+  const { msg, senderId, groupId } = req.body;
+  const data = {
+    groupId,
+    msg,
+    senderId,
+  };
   try {
-    const { name, members, admin } = req.body;
-    console.log(req.body);
-    const userGroupChat = new groupchat({ name, members, admin });
-    const data = await userGroupChat.save();
-    console.log(data);
-    res.status(201).send(data);
-  } catch (error) {
-    res.status(500).send(error);
+    const groupChatModel = new groupChat(data);
+    const response = await groupChatModel.save();
+    console.log("RES", response);
+    res.status(201).send(response);
+  } catch (err) {
+    console.log(err);
+    res.status(404).send({ msg: "Client error" });
   }
 };
 
-const getGroupChat = async (req, res) => {
-  const { admin } = req.query;
+const getGroupMsg = async (req, res) => {
+  const { groupId } = req.query;
+  console.log("Id", groupId);
   try {
-    const userGroupChat = await groupchat.find({
-      admin,
+    const groupMsg = await groupChat.find({
+      groupId,
     });
-    res.status(200).send({ userGroupChat });
+    console.log("MSG", groupMsg);
+    res.status(200).send({ groupMsg });
   } catch (err) {
-    console.log(err);
+    res.status(500).send({ msg: "Server error" });
   }
 };
 
 module.exports = {
   addGroupChat,
-  getGroupChat,
+  getGroupMsg,
 };
