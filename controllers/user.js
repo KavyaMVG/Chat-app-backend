@@ -52,7 +52,7 @@ const login = async (req, res) => {
     }
 
     const token = jwt.sign(req.body, jwtSecret, {
-      expiresIn: "5000s",
+      expiresIn: "10h",
     });
 
     const data = {
