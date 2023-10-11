@@ -20,7 +20,6 @@ const addGroupChat = async (req, res) => {
 
 const getGroupMsg = async (req, res) => {
   const { groupId } = req.query;
-  console.log("Id", groupId);
   try {
     const groupMsg = await groupChat.find({
       groupId,

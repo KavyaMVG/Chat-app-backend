@@ -60,8 +60,6 @@ const login = async (req, res) => {
       token,
     };
 
-    console.log(data);
-
     res.status(200).send({
       msg: "Login successful!",
       user: data,

@@ -17,6 +17,7 @@ const contactList = async (req, res) => {
 const addContact = async (req, res) => {
   try {
     const existingUser = await user.findOne({ email: req.body.contact.email });
+
     if (!existingUser) {
       return res
         .status(404)
@@ -24,12 +25,12 @@ const addContact = async (req, res) => {
     }
     const existingContact = await contact.findOne({
       email: req.body.contact.email,
-      userId: req.body.contact.userId,
+      userId: req.body.userId,
     });
+
     if (existingContact) {
       return res.status(403).send({ msg: "Contact already exists" });
     }
-
     req.body.contact.id = existingUser._id;
     const contactModel = new contact(req.body);
     const response = await contactModel.save();
@@ -37,12 +38,18 @@ const addContact = async (req, res) => {
       .status(201)
       .send({ id: response._id, msg: "Contact added successfully" });
   } catch (err) {
-    console.log(err);
+    console.log("bacjjj", err);
     res.status(500).send({ msg: "Server error" });
   }
+};
+
+const deleteAllContacts = async (req, res) => {
+  const response = await contact.deleteMany();
+  res.json(response);
 };
 
 module.exports = {
   contactList,
   addContact,
+  deleteAllContacts,
 };

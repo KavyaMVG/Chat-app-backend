@@ -48,6 +48,7 @@ const getSenderId = async (req, res) => {
     const senderModel = await chat.findOne({
       senderId: senderChat,
     });
+    console.log("SenderModel", senderModel);
     res.status(200).send({ senderModel });
   } catch (err) {
     res.status(500).send({ msg: "Server error" });
@@ -60,6 +61,7 @@ const getReceiverId = async (req, res) => {
     const receiverModel = await chat.findOne({
       receiverId: receiverChat,
     });
+    console.log("REceiver", receiverModel);
     res.status(200).send({ receiverModel });
   } catch (err) {
     res.status(500).send({ msg: "Server error" });
@@ -74,6 +76,7 @@ const getOneToOneChats = async (req, res) => {
         $all: [senderId, receiverId],
       },
     });
+    console.log("ChatModel", chatModel);
     res.status(200).send({ chats: chatModel });
   } catch (err) {
     console.log(err);
