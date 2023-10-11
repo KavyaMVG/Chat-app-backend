@@ -27,7 +27,7 @@ const addContact = async (req, res) => {
       email: req.body.contact.email,
       userId: req.body.userId,
     });
-
+    console.log("req.body.userId", req.body.userId);
     if (existingContact) {
       return res.status(403).send({ msg: "Contact already exists" });
     }
