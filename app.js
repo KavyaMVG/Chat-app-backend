@@ -9,18 +9,23 @@ const contactsRouter = require("./routes/contact");
 const chatRouter = require("./routes/chat");
 const groupChatRouter = require("./routes/groupChat");
 const { chat } = require("./models/chat");
+const server = require("http").Server(app);
 
 const groupRouter = require("./routes/group");
 
 const PORT = process.env.PORT;
-const io = require("socket.io")(8080, {
-  cors: {
-    origin: "*",
-  },
-});
+const io = require("socket.io")(server);
+
+// const io =
+//   (8080,
+//   {
+//     cors: {
+//       origin: "*",
+//     },
+//   });
 
 io.on("connect", (socket) => {
-  console.log("io connected!")
+  console.log("io connected!");
   socket.on("message", async (payload) => {
     const { msg, senderId, receiverId } = payload.data;
     const data = {
