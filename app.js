@@ -20,6 +20,7 @@ const io = require("socket.io")(8080, {
 });
 
 io.on("connect", (socket) => {
+  console.log("io connected!")
   socket.on("message", async (payload) => {
     const { msg, senderId, receiverId } = payload.data;
     const data = {
