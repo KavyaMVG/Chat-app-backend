@@ -13,7 +13,7 @@ const { chat } = require("./models/chat");
 const groupRouter = require("./routes/group");
 
 const PORT = process.env.PORT;
-const io = require("socket.io")(3000, {
+const io = require("socket.io")(process.env.SOCKET_PORT, {
   cors: {
     origin: "*",
   },
