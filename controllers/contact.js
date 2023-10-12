@@ -24,10 +24,10 @@ const addContact = async (req, res) => {
         .send({ msg: "Cannot add contact, User is not registered" });
     }
     const existingContact = await contact.findOne({
-      email: req.body.contact.email,
+      "contact.email": req.body.contact.email,
       userId: req.body.userId,
     });
-    console.log("req.body.userId", req.body.userId);
+    console.log("req.body.userId", req.body);
     if (existingContact) {
       return res.status(403).send({ msg: "Contact already exists" });
     }
@@ -38,7 +38,6 @@ const addContact = async (req, res) => {
       .status(201)
       .send({ id: response._id, msg: "Contact added successfully" });
   } catch (err) {
-    console.log("bacjjj", err);
     res.status(500).send({ msg: "Server error" });
   }
 };
