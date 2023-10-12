@@ -47,5 +47,7 @@ app.use("/groupChat", groupChatRouter);
 
 app.listen(PORT, async () => {
   console.log(`Listening on port: ${PORT}`);
+  console.log(io.httpServer._connectionKey);
+
   database.connect();
 });
