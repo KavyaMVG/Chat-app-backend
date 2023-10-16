@@ -41,6 +41,10 @@ app.use(bodyParser.json());
 // app.use(cors({ origin: "*" }));
 
 // Routes
+app.use((req, res) => {
+  res.send("OK");
+});
+
 app.use("/user", userRouter);
 app.use("/contact", contactsRouter);
 app.use("/chat", chatRouter);
