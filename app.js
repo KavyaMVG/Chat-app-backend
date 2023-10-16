@@ -3,6 +3,9 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const database = require("./database");
 const cors = require("cors");
+const http = require("http");
+const socketio = require("socket.io");
+
 const app = express();
 const userRouter = require("./routes/user");
 const contactsRouter = require("./routes/contact");
@@ -13,11 +16,10 @@ const { chat } = require("./models/chat");
 const groupRouter = require("./routes/group");
 
 const PORT = process.env.PORT;
-const io = require("socket.io")(process.env.SOCKET_PORT, {
-  cors: {
-    origin: "*",
-  },
-});
+const server = http.createServer(app);
+const io = socketio(server);
+
+app.use(cors());
 
 io.on("connect", (socket) => {
   console.log("io connected!");
@@ -36,7 +38,7 @@ io.on("connect", (socket) => {
 
 app.use(express.json());
 app.use(bodyParser.json());
-app.use(cors({ origin: "*" }));
+// app.use(cors({ origin: "*" }));
 
 // Routes
 app.use("/user", userRouter);
@@ -47,7 +49,5 @@ app.use("/groupChat", groupChatRouter);
 
 app.listen(PORT, async () => {
   console.log(`Listening on port: ${PORT}`);
-  console.log(io.httpServer._connectionKey);
-
   database.connect();
 });
